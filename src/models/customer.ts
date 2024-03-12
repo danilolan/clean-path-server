@@ -1,21 +1,29 @@
 import pool from "../db/config";
 import { CustomerDTO, Customer } from "../types/customer";
 
+interface FindAllParams {
+  sort?: keyof CustomerDTO;
+  order?: string;
+  filter?: Partial<CustomerDTO>;
+  page?: string;
+  limit?: string;
+}
+
 export default class CustomerModel {
-  static async findAll(
-    sort: string = "id",
-    order: string = "ASC",
-    filter: Partial<CustomerDTO> = {},
-    page: string | undefined,
-    limit: string | undefined
-  ) {
+  static async findAll({
+    sort = "id",
+    order = "ASC",
+    filter = {},
+    page = "1",
+    limit = "5",
+  }: FindAllParams = {}) {
     const validSortColumns = ["id", "name", "email", "positionX", "positionY"];
     const sortColumn = validSortColumns.includes(sort) ? sort : "id";
     const sortOrder = ["ASC", "DESC"].includes(order.toUpperCase())
       ? order.toUpperCase()
       : "ASC";
 
-    const pageNum = parseInt(page || "", 10) > 0 ? parseInt(page || "", 10) : 1;
+    const pageNum = parseInt(page, 10) > 0 ? parseInt(page || "", 10) : 1;
     const limitNum =
       parseInt(limit || "", 10) > 0 ? parseInt(limit || "", 10) : 5;
     const offset = (pageNum - 1) * limitNum;
@@ -53,7 +61,7 @@ export default class CustomerModel {
 
     console.log(query);
 
-    const allCustomers = await pool.query(query, queryParams);
+    const allCustomers = await pool.query<Customer>(query, queryParams);
 
     return allCustomers.rows;
   }
