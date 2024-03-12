@@ -1,7 +1,7 @@
 import { Customer } from "../types/customer";
-import { PathDto } from "../types/path";
+import { PathDto, Position } from "../types/path";
 
-export default function customersToPath(customers: Customer[]): PathDto {
+export function customersToPath(customers: Customer[]): PathDto {
   return customers.map((customer) => ({
     name: customer.name,
     position: {

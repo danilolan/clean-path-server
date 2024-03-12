@@ -1,7 +1,7 @@
 import CustomerModel from "../models/customer";
 import { Request, Response } from "express";
 import { CustomerDTO } from "../types/customer";
-import remapCustomers, { remapCustomer } from "../utils/remapCustomers";
+import remapCustomers, { remapCustomer } from "../utils/customers";
 
 export default class customerController {
   static async getAllCustomers(req: Request, res: Response) {
