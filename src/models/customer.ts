@@ -5,14 +5,20 @@ export default class CustomerModel {
   static async findAll(
     sort: string = "id",
     order: string = "ASC",
-    filter: Partial<CustomerDTO> = {}
+    filter: Partial<CustomerDTO> = {},
+    page: string | undefined,
+    limit: string | undefined
   ) {
     const validSortColumns = ["id", "name", "email", "positionX", "positionY"];
     const sortColumn = validSortColumns.includes(sort) ? sort : "id";
-
     const sortOrder = ["ASC", "DESC"].includes(order.toUpperCase())
       ? order.toUpperCase()
       : "ASC";
+
+    const pageNum = parseInt(page || "", 10) > 0 ? parseInt(page || "", 10) : 1;
+    const limitNum =
+      parseInt(limit || "", 10) > 0 ? parseInt(limit || "", 10) : 5;
+    const offset = (pageNum - 1) * limitNum;
 
     let whereClauses = [];
     let queryParams = [];
@@ -40,7 +46,12 @@ export default class CustomerModel {
       SELECT * FROM customer
       ${whereClause}
       ORDER BY "${sortColumn}" ${sortOrder}
+      LIMIT $${queryParamIndex++} OFFSET $${queryParamIndex}
     `;
+
+    queryParams.push(limitNum, offset);
+
+    console.log(query);
 
     const allCustomers = await pool.query(query, queryParams);
 

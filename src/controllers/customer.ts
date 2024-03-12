@@ -8,8 +8,16 @@ export default class customerController {
       const sort = req.query.sort as string | undefined;
       const order = req.query.order as string | undefined;
       const filter = req.body as CustomerDTO;
+      const page = req.query.page as string | undefined;
+      const limit = req.query.limit as string | undefined;
 
-      const allCustomers = await CustomerModel.findAll(sort, order, filter);
+      const allCustomers = await CustomerModel.findAll(
+        sort,
+        order,
+        filter,
+        page,
+        limit
+      );
       res.status(200).json(allCustomers);
     } catch (error) {
       console.error(error);
