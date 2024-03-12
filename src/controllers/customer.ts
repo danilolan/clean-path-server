@@ -5,7 +5,11 @@ import { CustomerDTO } from "../types/customer";
 export default class customerController {
   static async getAllCustomers(req: Request, res: Response) {
     try {
-      const allCustomers = await CustomerModel.findAll();
+      const sort = req.query.sort as string | undefined;
+      const order = req.query.order as string | undefined;
+      const filter = req.body as CustomerDTO;
+
+      const allCustomers = await CustomerModel.findAll(sort, order, filter);
       res.status(200).json(allCustomers);
     } catch (error) {
       console.error(error);
