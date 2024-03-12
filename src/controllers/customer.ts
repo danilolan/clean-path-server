@@ -1,24 +1,28 @@
 import CustomerModel from "../models/customer";
 import { Request, Response } from "express";
 import { CustomerDTO } from "../types/customer";
+import remapCustomers, { remapCustomer } from "../utils/remapCustomers";
 
 export default class customerController {
   static async getAllCustomers(req: Request, res: Response) {
     try {
-      const sort = req.query.sort as string | undefined;
+      const sort = req.query.sort as keyof CustomerDTO | undefined;
       const order = req.query.order as string | undefined;
       const filter = req.body as CustomerDTO;
       const page = req.query.page as string | undefined;
       const limit = req.query.limit as string | undefined;
 
-      const allCustomers = await CustomerModel.findAll(
+      const allCustomers = await CustomerModel.findAll({
         sort,
         order,
         filter,
         page,
-        limit
-      );
-      res.status(200).json(allCustomers);
+        limit,
+      });
+
+      const remapedAllCustomers = remapCustomers(allCustomers);
+
+      res.status(200).json(remapedAllCustomers as CustomerDTO[]);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Server internal error" });
@@ -28,10 +32,14 @@ export default class customerController {
   static async getCustomer(req: Request, res: Response) {
     try {
       const customer = await CustomerModel.findOne(req.params.id);
+
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });
       }
-      res.status(200).json(customer);
+
+      const remapedCustomer = remapCustomer(customer);
+
+      res.status(200).json(remapedCustomer as CustomerDTO);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Server internal error" });
@@ -42,7 +50,10 @@ export default class customerController {
     try {
       const requestCostumer: CustomerDTO = req.body;
       const newCustomer = await CustomerModel.create(requestCostumer);
-      res.status(200).json(newCustomer);
+
+      const remapedCustomer = remapCustomer(newCustomer);
+
+      res.status(200).json(remapedCustomer as CustomerDTO);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Server internal error" });
@@ -55,10 +66,14 @@ export default class customerController {
         req.params.id,
         req.body
       );
+
       if (!updatedCustomer) {
         return res.status(404).json({ error: "Customer not found" });
       }
-      res.status(200).json(updatedCustomer);
+
+      const remapedCustomer = remapCustomer(updatedCustomer);
+
+      res.status(200).json(remapedCustomer as CustomerDTO);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Server internal error" });
