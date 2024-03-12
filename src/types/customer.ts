@@ -4,8 +4,8 @@ export type Customer = {
   updatedAt: string;
   name: string;
   email: string;
-  positionX: number;
-  positionY: number;
+  positionx: number;
+  positiony: number;
 };
 
 export type CustomerDTO = {
