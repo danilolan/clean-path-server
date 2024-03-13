@@ -8,7 +8,8 @@ export default class customerController {
     try {
       const sort = req.query.sort as keyof CustomerDTO | undefined;
       const order = req.query.order as string | undefined;
-      const filter = req.body as CustomerDTO;
+      const filter = req.query.filter as string | undefined;
+      const key = req.query.key as string | undefined;
       const page = req.query.page as string | undefined;
       const limit = req.query.limit as string | undefined;
 
@@ -16,6 +17,7 @@ export default class customerController {
         sort,
         order,
         filter,
+        key,
         page,
         limit,
       });

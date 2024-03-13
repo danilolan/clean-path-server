@@ -4,7 +4,8 @@ import { CustomerDTO, Customer } from "../types/customer";
 interface FindAllParams {
   sort?: keyof CustomerDTO;
   order?: string;
-  filter?: Partial<CustomerDTO>;
+  filter?: string;
+  key?: string;
   page?: string;
   limit?: string;
 }
@@ -13,7 +14,8 @@ export default class CustomerModel {
   static async findAll({
     sort = "id",
     order = "ASC",
-    filter = {},
+    filter = "",
+    key = "id",
     page = "1",
     limit = "5",
   }: FindAllParams = {}) {
@@ -28,27 +30,15 @@ export default class CustomerModel {
       parseInt(limit || "", 10) > 0 ? parseInt(limit || "", 10) : 5;
     const offset = (pageNum - 1) * limitNum;
 
-    let whereClauses = [];
     let queryParams = [];
     let queryParamIndex = 1;
 
-    const remapFilter = {
-      name: filter.name,
-      email: filter.email,
-      positionx: filter.position?.x,
-      positiony: filter.position?.y,
-    };
-
-    for (const [key, value] of Object.entries(remapFilter)) {
-      if (value !== null && value !== undefined) {
-        whereClauses.push(`${key} = $${queryParamIndex}`);
-        queryParams.push(value);
-        queryParamIndex++;
-      }
+    let whereClause = "";
+    if (filter !== "" && key !== "") {
+      whereClause = `WHERE "${key}" = $${queryParamIndex}`;
+      queryParams.push(filter);
+      queryParamIndex++;
     }
-
-    let whereClause =
-      whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
     const query = `
       SELECT * FROM customer
