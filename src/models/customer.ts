@@ -99,4 +99,11 @@ export default class CustomerModel {
     );
     return deletedCustomer.rows[0];
   }
+
+  static async countAll() {
+    const query = "SELECT COUNT(*) AS total FROM customer";
+    const result = await pool.query(query);
+    const totalCount = result.rows[0].total;
+    return parseInt(totalCount, 10);
+  }
 }

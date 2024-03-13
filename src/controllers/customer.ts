@@ -1,6 +1,6 @@
 import CustomerModel from "../models/customer";
 import { Request, Response } from "express";
-import { CustomerDTO } from "../types/customer";
+import { AllCustomersDTO, CustomerDTO } from "../types/customer";
 import remapCustomers, { remapCustomer } from "../utils/customers";
 
 export default class customerController {
@@ -20,9 +20,14 @@ export default class customerController {
         limit,
       });
 
-      const remapedAllCustomers = remapCustomers(allCustomers);
+      const allCustomersDto: AllCustomersDTO = {
+        customers: remapCustomers(allCustomers),
+        limit: parseInt(limit || "5"),
+        page: parseInt(page || "0"),
+        total: await CustomerModel.countAll(),
+      };
 
-      res.status(200).json(remapedAllCustomers as CustomerDTO[]);
+      res.status(200).json(allCustomersDto as AllCustomersDTO);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Server internal error" });
