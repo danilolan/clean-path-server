@@ -26,7 +26,7 @@ export default class customerController {
         customers: remapCustomers(allCustomers),
         limit: parseInt(limit || "5"),
         page: parseInt(page || "0"),
-        total: await CustomerModel.countAll(),
+        total: await CustomerModel.countAll(filter, key),
       };
 
       res.status(200).json(allCustomersDto as AllCustomersDTO);
