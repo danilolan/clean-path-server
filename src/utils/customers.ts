@@ -5,7 +5,7 @@ export default function remapCustomers(customers: Customer[]): CustomerDTO[] {
 }
 
 export function remapCustomer(customer: Customer): CustomerDTO {
-  const { id, createdAt, updatedAt, name, email, positionx, positiony } =
+  const { id, createdAt, updatedAt, name, email, phone, positionx, positiony } =
     customer;
 
   return {
@@ -14,6 +14,7 @@ export function remapCustomer(customer: Customer): CustomerDTO {
     updatedAt,
     name,
     email,
+    phone,
     position: {
       x: positionx,
       y: positiony,
