@@ -4,6 +4,7 @@ export type Customer = {
   updatedAt: string;
   name: string;
   email: string;
+  phone: string;
   positionx: number;
   positiony: number;
 };
@@ -14,6 +15,7 @@ export type CustomerDTO = {
   updatedAt?: string;
   name: string;
   email: string;
+  phone: string;
   position: {
     x: number;
     y: number;

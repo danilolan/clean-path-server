@@ -19,7 +19,14 @@ export default class CustomerModel {
     page = "1",
     limit = "5",
   }: FindAllParams = {}) {
-    const validSortColumns = ["id", "name", "email", "positionX", "positionY"];
+    const validSortColumns = [
+      "id",
+      "name",
+      "email",
+      "phone",
+      "positionX",
+      "positionY",
+    ];
     const sortColumn = validSortColumns.includes(sort) ? sort : "id";
     const sortOrder = ["ASC", "DESC"].includes(order.toUpperCase())
       ? order.toUpperCase()
@@ -65,19 +72,19 @@ export default class CustomerModel {
   }
 
   static async create(data: CustomerDTO) {
-    const { name, email, position } = data;
+    const { name, email, phone, position } = data;
     const newCustomer = await pool.query<Customer>(
-      "INSERT INTO customer(name, email, positionx, positiony) VALUES($1, $2, $3, $4) RETURNING *",
-      [name, email, position.x, position.y]
+      "INSERT INTO customer(name, email, phone, positionx, positiony) VALUES($1, $2, $3, $4, $5) RETURNING *",
+      [name, email, phone, position.x, position.y]
     );
     return newCustomer.rows[0];
   }
 
   static async update(id: string, data: CustomerDTO) {
-    const { name, email, position } = data;
+    const { name, email, phone, position } = data;
     const updatedCustomer = await pool.query<Customer>(
-      "UPDATE customer SET name = $2, email = $3, positionx = $4, positiony = $5 WHERE id = $1 RETURNING *",
-      [id, name, email, position.x, position.y]
+      "UPDATE customer SET name = $2, email = $3, phone = $4, positionx = $5, positiony = $6 WHERE id = $1 RETURNING *",
+      [id, name, email, phone, position.x, position.y]
     );
     return updatedCustomer.rows[0];
   }

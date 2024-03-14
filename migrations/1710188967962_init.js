@@ -17,6 +17,7 @@ exports.up = (pgm) => {
     },
     name: { type: "varchar(100)", notNull: true },
     email: { type: "varchar(100)", notNull: true },
+    phone: { type: "varchar(100)", notNull: true },
     positionx: { type: "integer", notNull: true },
     positiony: { type: "integer", notNull: true },
   });
